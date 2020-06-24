@@ -10,7 +10,6 @@ pip install phontext
 
 ## Usage
 
-Use this package to parse words
 ```python
 import phontext
 
