@@ -1,6 +1,8 @@
 # Written by Rolando Muñoz (2019-2020)
-
-from word import Word
+try:
+  from .word import Word
+except:
+  from word import Word
 
 class PhonParser:
   def __init__(self):
