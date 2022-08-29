@@ -1,7 +1,7 @@
 """
 Manage word list for phonology analysis.
 """
-from phontext import Word
+from phontext.word import Word
 
 class Corpus:
 
@@ -16,7 +16,11 @@ class Corpus:
         self._vowels = vowels
         self._consonants = consonants
 
-        word_list = []
+        self._word_list = []
+
+    @property
+    def word_list(self):
+        return self._word_list
 
     @property
     def vowels(self):
@@ -25,6 +29,15 @@ class Corpus:
     @property
     def consonants(self):
         return self._consonants
+
+    def append(self, new_word):
+        if isinstance(new_word, (str, list, tuple))
+            new_word_ = Word(new_word)
+        elif isinstance(new_word, Word)
+            new_word_ = new_word
+        else:
+            raise ValueError('Add only str, list, tuple or Word obects.')
+        self._word_list.append(new_word_)
 
     def read_from_text_file(self, file_path, encoding = 'UTF-8'):
         config = {
