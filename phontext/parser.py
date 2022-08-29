@@ -24,6 +24,7 @@ class Word:
             raise TypeError('word must be a string or an iterable.')
 
         self._word = lst_word
+        self._word_str = ' '.join(lst_word)
         self._cv = self.to_cv()
 
     @property
@@ -42,10 +43,15 @@ class Word:
     def word(self, new_word):
         self._word = new_word
         self._cv = self.to_cv()
+        self._word_str = ' '.join(_word)
 
     @property
     def cv(self):
         return self._cv
+
+    @property
+    def word_str(self):
+        return self._word_str
 
     def __str__(self):
         return ' '.join(self.word)
