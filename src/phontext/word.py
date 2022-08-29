@@ -21,7 +21,7 @@ class Word:
         elif isinstance(word, (list, tuple, str)):
             lst_word = word
         else:
-            raise TypeError('word must be a string or an iterable.')
+            raise TypeError('A Word must be built from a string or an iterable.')
 
         self._word = lst_word
         self._word_str = ' '.join(lst_word)
@@ -81,7 +81,19 @@ class Word:
         return self.word.__setitem__(index, value)
 
     def _string_to_word(self, word):
+        """
+        Parse a word into a list of segments.
 
+        Parameters
+        ----------
+        word : str
+            A word as a sequence of characters.
+
+        Returns
+        -------
+        list
+            A word as a sequence of segments in a list.
+        """
         # Get compound segments and sort them by size in descending order
         all_chars = self.vowels + self.consonants
         chars_ = [segment for segment in all_chars if len(segment) > 1]
@@ -104,7 +116,12 @@ class Word:
 
     def startswith(self, segment):
         """
-        Check if the :class:`Word` starts with a segment.
+        Check if :class:`Word` starts with a segment.
+
+        Parameters
+        ----------
+        segment : str
+            A character.
 
         Returns
         -------
@@ -115,7 +132,12 @@ class Word:
 
     def endswith(self, segment):
         """
-        Check if the :class:`Word` ends with a segment.
+        Check if :class:`Word` ends with a segment.
+
+        Parameters
+        ----------
+        segment : str
+            A character.
 
         Returns
         -------
