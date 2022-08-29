@@ -16,11 +16,17 @@ class Corpus:
         self._vowels = vowels
         self._consonants = consonants
 
-        self._word_list = []
+        self._data = []
+
+    def __len__(self):
+        return self._data.__len__()
+
+    def __iter__(self):
+        return self._data.__iter__()
 
     @property
     def word_list(self):
-        return self._word_list
+        return self._data
 
     @property
     def vowels(self):
@@ -31,10 +37,13 @@ class Corpus:
         return self._consonants
 
     def append(self, new_word):
-        if isinstance(new_word, (str, list, tuple))
+        """
+
+        """
+        if isinstance(new_word, (str, list, tuple)):
             new_word_ = Word(new_word)
-        elif isinstance(new_word, Word)
+        elif isinstance(new_word, Word):
             new_word_ = new_word
         else:
             raise ValueError('Add only str, list, tuple or Word obects.')
-        self._word_list.append(new_word_)
+        self._data.append(new_word_)
