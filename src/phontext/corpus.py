@@ -38,21 +38,3 @@ class Corpus:
         else:
             raise ValueError('Add only str, list, tuple or Word obects.')
         self._word_list.append(new_word_)
-
-    def read_from_text_file(self, file_path, encoding = 'UTF-8'):
-        config = {
-            'vowels':self.vowels,
-            'consonants':self.consonants
-        }
-        list_ = []
-        with open(file_path, 'r', encoding = encoding) as text_file:
-            for line in text_file.readlines():
-                word_str = line.rstrip()
-                word = Word(word_str, **config)
-                list_.append(word)
-        self.word_list = list_
-
-    def write(self, path):
-        with open(path, 'w', encoding = 'utf-8') as text_file:
-            for word in self.word_list:
-                text_file.write(f'{word.word_str}\t{word.cv}\n')
