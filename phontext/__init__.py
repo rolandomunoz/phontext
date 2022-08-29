@@ -1,2 +1,2 @@
-from .parser import *
-from .fimport import *
+from phontext.parser import Word
+from phontext.corpus import Corpus
