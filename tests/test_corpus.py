@@ -14,5 +14,3 @@ if __name__ == '__main__':
     }
 
     corpus = Corpus(**config)
-    corpus.read_from_text_file(fin)
-    corpus.write(fout)
