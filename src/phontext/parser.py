@@ -43,7 +43,7 @@ class Word:
     def word(self, new_word):
         self._word = new_word
         self._cv = self.to_cv()
-        self._word_str = ' '.join(_word)
+        self._word_str = ' '.join(self._word)
 
     @property
     def cv(self):
