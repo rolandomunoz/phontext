@@ -10,27 +10,77 @@ pip install phontext
 
 ## Usage
 
-```python
-import phontext
+Working with words
 
-lst_charGroups = ['ts', 'ch', 'rr']
-parser = phontext.Parser()
-parser.set_complex_chars(lst_charGroups)
+```python
+from phontext import Word
+
+config = {
+    'vowels': ['a', 'e', 'i', 'o', 'u'],
+    'consonants': ['p', 't', 'k', 'ch', 'ts', 'rr', 'r']
+}
 
 # Parse words into segments
-word = parser.to_word('hitsacha')
-print(word)
->> h i ts a ch a
+word = Word('chincha', **config)
+
+len(word)
+>> 5
+
+word.cv
+>> CVCCV
+
+word.word_str
+>> ch i n ch a
+
+word.word
+>> ["ch", "i","n", "ch", "a"]
 
 # Find minimal pairs
 
-word1 = parser.to_word('perro')
-word2 = parser.to_word('pero')
+word1 = Word('tasa', **config)
+word2 = Word('kasa', **config)
+word3 = Word('tasl', **config)
 
-word1.is_minimaldiff(word2)
+word1.is_minimal_pair(word2)
 >> True
 
+word1.is_minimal_pair(word3)
+>> False
+        
 # and much more...
+
+```
+Working with wordlist
+
+```python
+from phontext import Corpus
+
+words = ['perro', 'pero', 'piso', 'peso']
+
+config = {
+    'vowels': ['a', 'e', 'i', 'o', 'u'],
+    'consonants': ['p', 't', 'k', 'ch', 'ts', 'rr', 'r']
+}
+
+corpus = Corpus(**config)
+for word_str in words:
+    corpus.append(word_str)
+    
+segment_stat = corpus.get_segment_frequency()
+segment_stat
+>> {
+    'vowels': {
+        'e':3,
+        'i':1
+    }
+    'consonants':{
+        'p':4,
+        'rr':1
+    }
+    'others':
+        's':2,
+        'r':1
+}
 
 ```
 ## Contributing
