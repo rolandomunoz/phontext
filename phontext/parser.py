@@ -1,57 +1,51 @@
-# Written by Rolando Muñoz (2019-2022)
-
-class PhonParser:
-
-    def __init__(self):
-        self.complexCharList = []
-
-    def set_complex_chars(self, complexCharList):
-        complexCharList = sorted(complexCharList, key=len, reverse = True)
-        self.complexCharList = complexCharList
-
-    def to_word(self, word):
-        """ Split segments from a word
-        Parameters:
-        word (string): a word to be segmented
-        Returns:
-        Word: a segment representation of a word 
-        """
-        lst_word = list()
-        while word != '':
-            charLen = self.__char_distance(word)
-            phon = word[0:charLen]
-            word = word[charLen:]
-            lst_word.append(phon)
-        return Word(lst_word)
-
-    def __char_distance(self, word):
-        """
-        Calculate how many characters should count as one segment from the start of a word 
-
-        Parameters
-        ----------
-        word : str
-            A word to be segmented
-
-        Returns
-        --------
-        int
-            The number of characters that count as one segment at the start of a word
-        """
-        charLen = 1
-        for char in self.complexCharList:
-            if word.startswith(char):
-                charLen = len(char)
-                break
-        return charLen
-
+"""
+A word class for phonetic analysis.
+"""
 class Word:
     """
     Represent a word.
     """
+    def __init__(self, word, vowels = None, consonants = None):
 
-    def __init__(self, lst_word):
-        self.word = lst_word
+        if vowels is None:
+            vowels = ['a', 'e', 'i', 'o', 'u']
+
+        if consonants is None:
+            consonants = []
+
+        self._vowels = vowels
+        self._consonants = consonants
+ 
+        if isinstance(word, str):
+            lst_word = self._string_to_word(word)
+        elif isinstance(word, (list, tuple, str)):
+            lst_word = word
+        else:
+            raise TypeError('word must be a string or an iterable.')
+
+        self._word = lst_word
+        self._cv = self.to_cv()
+
+    @property
+    def vowels(self):
+        return self._vowels
+
+    @property
+    def consonants(self):
+        return self._consonants
+
+    @property
+    def word(self):
+        return self._word
+
+    @word.setter
+    def word(self, new_word):
+        self._word = new_word
+        self._cv = self.to_cv()
+
+    @property
+    def cv(self):
+        return self._cv
 
     def __str__(self):
         return ' '.join(self.word)
@@ -63,7 +57,7 @@ class Word:
         return self.word.__iter__()
 
     def __reversed__(self):
-        return self.word.__reversed__()
+        return self._word.__reversed__()
 
     def __getitem__(self, index):
         return self.word.__getitem__(index)
@@ -79,6 +73,28 @@ class Word:
 
     def __setitem__(self, index, value):
         return self.word.__setitem__(index, value)
+
+    def _string_to_word(self, word):
+
+        # Get compound segments and sort them by size in descending order
+        all_chars = self.vowels + self.consonants
+        chars_ = [segment for segment in all_chars if len(segment) > 1]
+        chars = sorted(chars_, key=len, reverse = True)
+
+        lst_word = []
+        while word != '':
+            # Get maximal distance from left to right
+            char_len = 1
+            for char in chars:
+                if word.startswith(char):
+                    char_len = len(char)
+                    break
+
+            # Split word
+            segment = word[0:char_len]
+            word = word[char_len:]
+            lst_word.append(segment)
+        return lst_word
 
     def startswith(self, segment):
         """
@@ -103,17 +119,11 @@ class Word:
         maxIndex = len(self) - 1
         return self[maxIndex] == segment
 
-    def copy(self):
-        return Word(self.word.copy())
-
     def reverse(self):
         """
         Reverse the word segment.
         """
         self.word = [element for element in self.__reversed__()]
-
-    def is_minimaldiff(self, other):
-        is_minimal_pair(self, other)
 
     def is_minimal_pair(self, other):
         """
@@ -135,9 +145,15 @@ class Word:
             `True` if it is minimal pair. Otherwise, return `False`.
         """
         if not len(self) == len(other):
+            # If both do not have the same len
             return False
 
         if self == other:
+            # If both have the same segments
+            return False
+
+        if self.cv != other.cv:
+            # If both do not have the same CV pattern
             return False
 
         diff_counter = 0
@@ -149,51 +165,32 @@ class Word:
                 return False
         return True
 
-    def to_cv(self, nucleus_list = None):
+    def to_cv(self):
         """
         Convert to CV.
-
-        Parameters
-        ----------
-        nucleus_list : list
-            A list of syllabic nuclei.
 
         Returns
         -------
         str
             A cv representation of a word
         """
-        if nucleus_list is None:
-            nucleus_list = ['a', 'e', 'i', 'o', 'u']
-
         cv_pattern = []
-        for phon in self:
-            if phon in nucleus_list:
+        for segment in self:
+            if segment in self._vowels:
                 cv_pattern.append('V')
             else:
                 cv_pattern.append('C')
         cv_pattern= ''.join(cv_pattern)
         return cv_pattern
 
-    def get_invalid_segments(self, valid_segment_list = []):
+    def get_invalid_segments(self):
         """
         Get a list of invalid segments in a word
-
-        Parameters
-        ----------
-        valid_segment_list : list
-            A list of valid segment strings
 
         Returns
         -------
         list
             Only invalid segments
         """
+        valid_segment_list = self._vowels + self._consonants
         return [phon for phon in self if not phon in valid_segment_list]
-
-if __name__ == '__main__':
-    parser = PhonParser()
-    parser.set_complex_chars(['ch', 'ts', 'aa'])
-    word1 = parser.to_word('chincha')
-    word2 = parser.to_word('chinchaa')
-    print(word1)
