@@ -81,9 +81,25 @@ class Word:
         return self.word.__setitem__(index, value)
 
     def startswith(self, segment):
+        """
+        Check if the :class:`Word` starts with a segment.
+
+        Returns
+        -------
+        bool
+           `True` if the word starts with a segment. Otherwise, it is False.
+        """
         return self[0] == segment
 
     def endswith(self, segment):
+        """
+        Check if the :class:`Word` ends with a segment.
+
+        Returns
+        -------
+        bool
+            `True` if the word ends with a segment. Otherwise, it is False.
+        """
         maxIndex = len(self) - 1
         return self[maxIndex] == segment
 
@@ -91,15 +107,32 @@ class Word:
         return Word(self.word.copy())
 
     def reverse(self):
+        """
+        Reverse the word segment.
+        """
         self.word = [element for element in self.__reversed__()]
 
     def is_minimaldiff(self, other):
-        """ Check if there is a minimal pair with other word object
-        It does not take in care if the difference is between a consonant and a vowel (eg. cana vs cant).
-        Parameters:
-        other (Word): A segment representation of a word
-        Returns:
-        boolean: True or False
+        is_minimal_pair(self, other)
+
+    def is_minimal_pair(self, other):
+        """
+        Check if the word and `other` are minimal pairs.
+
+        When two words are different in one segment, this difference
+        must be between segments of the same type. For example, 
+        `cana` and `canu` are minimal pairs, while `cana` and `cant`
+        are not.
+
+        Parameters
+        ----------
+        other : :class:`Word`
+            A segment representation of a word to be compared.
+
+        Returns
+        -------
+        bool
+            `True` if it is minimal pair. Otherwise, return `False`.
         """
         if not len(self) == len(other):
             return False
@@ -107,39 +140,56 @@ class Word:
         if self == other:
             return False
 
-        diffCounter = 0
+        diff_counter = 0
         for i in range(0, len(self)):
             if self[i] != other[i]:
-                diffCounter+=1
+                diff_counter+=1
 
-            if diffCounter > 1:
+            if diff_counter > 1:
                 return False
         return True
 
-    def to_cv(self, nucleusList = ['a', 'e', 'i', 'o', 'u']):
-        """ Convert to CV
-        Parameters:
-        nucleusList (list): a list of syllabic nuclei
-        Returns:
-        str: a cv representation of a word 
-        """        
-        cvPattern = list()
-        for phon in self:
-            if phon in nucleusList:
-                cvPattern.append('V')
-            else:
-                cvPattern.append('C')
-        cvPattern= ''.join(cvPattern)
-        return cvPattern
+    def to_cv(self, nucleus_list = None):
+        """
+        Convert to CV.
 
-    def get_invalid_segments(self, validSegmentList = []):
-        """ Get a list of invalid segments in a word
-        Parameters:
-        validSegmentList (list): a list of valid segment strings
-        Returns:
-        list: only invalid segments 
-        """     
-        return [phon for phon in self if not phon in validSegmentList]
+        Parameters
+        ----------
+        nucleus_list : list
+            A list of syllabic nuclei.
+
+        Returns
+        -------
+        str
+            A cv representation of a word
+        """
+        if nucleus_list is None:
+            nucleus_list = ['a', 'e', 'i', 'o', 'u']
+
+        cv_pattern = []
+        for phon in self:
+            if phon in nucleus_list:
+                cv_pattern.append('V')
+            else:
+                cv_pattern.append('C')
+        cv_pattern= ''.join(cv_pattern)
+        return cv_pattern
+
+    def get_invalid_segments(self, valid_segment_list = []):
+        """
+        Get a list of invalid segments in a word
+
+        Parameters
+        ----------
+        valid_segment_list : list
+            A list of valid segment strings
+
+        Returns
+        -------
+        list
+            Only invalid segments
+        """
+        return [phon for phon in self if not phon in valid_segment_list]
 
 if __name__ == '__main__':
     parser = PhonParser()
