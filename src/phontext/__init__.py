@@ -1,2 +1,2 @@
-from phontext.parser import Word
+from phontext.word import Word
 from phontext.corpus import Corpus
