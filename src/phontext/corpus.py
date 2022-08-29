@@ -55,15 +55,36 @@ class Corpus:
             raise ValueError('Add only str, list, tuple or Word obects.')
         self._data.append(new_word_)
 
-    def get_segment_frequency(self):
+    def get_segment_frequency(self, by_group = True):
         """
         Get the segment occurrences from all entries in the corpus.
         """
         dict_ = {}
+        # Get all segments' frequency
         for word in self._data:
             for segment in word:
                 if segment in dict_:
                     dict_[segment] += 1
                 else:
                     dict_[segment] = 1
+
+        if by_group:
+            # Classify by sound category
+            vowels = {}
+            consonants = {}
+            others = {}
+            for segment, frequency in dict_.items():
+                if segment in self._vowels:
+                    vowels[segment] = frequency
+                elif segment in self._consonants:
+                    consonants[segment] = frequency
+                else:
+                    others[segment] = frequency
+
+            return {
+                'vowels': vowels,
+                'consonants': consonants,
+                'other': others
+            }
+
         return dict_
