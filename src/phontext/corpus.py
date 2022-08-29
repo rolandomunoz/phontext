@@ -38,12 +38,32 @@ class Corpus:
 
     def append(self, new_word):
         """
+        Add a new word to the Corpus.
 
+        new_word : str, tuple or :class:`Word`
+            An item to be added to the corpus.
         """
         if isinstance(new_word, (str, list, tuple)):
-            new_word_ = Word(new_word)
+            config = {
+                'vowels':self._vowels,
+                'consonants':self._consonants
+            }
+            new_word_ = Word(new_word, **config)
         elif isinstance(new_word, Word):
             new_word_ = new_word
         else:
             raise ValueError('Add only str, list, tuple or Word obects.')
         self._data.append(new_word_)
+
+    def get_segment_frequency(self):
+        """
+        Get the segment occurrences from all entries in the corpus.
+        """
+        dict_ = {}
+        for word in self._data:
+            for segment in word:
+                if segment in dict_:
+                    dict_[segment] += 1
+                else:
+                    dict_[segment] = 1
+        return dict_
